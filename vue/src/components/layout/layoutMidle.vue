@@ -16,6 +16,10 @@
             <el-radio-button label="url"></el-radio-button>
           </el-radio-group>
           <el-button type="success f-r"
+                     v-if="actionRadio === ''"
+                     v-on:click.stop="setSave">저장
+          </el-button>
+          <el-button type="success f-r"
                      v-if="actionRadio"
                      v-on:click.stop="setAction">추가
           </el-button>
@@ -99,6 +103,12 @@
             }
         },
         methods: {
+            setSave(){
+                if (this.action.length === 0){
+                    this.$EventBus.$emit('msg', '입력된 자동화 패턴이 없습니다.');
+                    return;
+                }
+            },
             setAction() {
                 this.action.push({
                     data : this.actionData,

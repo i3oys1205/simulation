@@ -74,6 +74,17 @@
                 this.edit.flag = false;
             }
         },
+        created() {
+            this.$EventBus.$on('msg', (msg) => {
+                this.openVn(msg);
+            });
+        },
+        destroyed(){
+            this.$EventBus.$off('msg');
+        },
+        mounted(){
+
+        },
         methods: {
             ...mapActions(['setActive']),
             newFile() {
@@ -99,18 +110,18 @@
                         continue;
                     }
                     if (value.name.includes(fileName)){
-                        this.openVn();
+                        this.openVn('같은 파일명이 있습니다');
                         return false;
                     }
                 }
                 return true;
             },
-            openVn() {
+            openVn(msg) {
                 const h = this.$createElement;
                 this.$message({
                     message: h('p', null, [
                         h('span', null, '[알림] '),
-                        h('i', { style: 'color: teal' }, '같은 파일명이 있습니다')
+                        h('i', {style: 'color: teal'}, msg)
                     ])
                 });
             }

@@ -7,6 +7,7 @@ import axios from 'axios'
 import store from './store'
 import './plugins/element.js'
 
+Vue.prototype.$EventBus = new Vue()
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
