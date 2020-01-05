@@ -7,15 +7,17 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    active : ''
   },
   mutations: {
-    increment (state) {
-      state.count++
+    inActive (state,active) {
+      state.active = active;
     }
   },
   actions:{
-
+    setActive(state,active){
+      store.commit('inActive',active);
+    }
   }
 })
 

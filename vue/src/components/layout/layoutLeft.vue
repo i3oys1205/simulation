@@ -13,7 +13,7 @@
                           v-for="(item,index) in files"
                           v-bind:key="index"
                           v-bind:index="`${index}-1`"
-                          v-on:click="active = index"
+                          v-on:click="(active = index , setActive(index))"
             >
               <span v-if="edit.index !== index">
                 {{item.name}}
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+    import {mapState,mapActions} from 'vuex';
     export default {
         name: "layoutLeft",
         data() {
@@ -74,6 +75,7 @@
             }
         },
         methods: {
+            ...mapActions(['setActive']),
             newFile() {
                 this.files.push({
                     name: "새 파일 " + this.files.length
@@ -89,6 +91,7 @@
             deleteFile() {
                 this.files.splice(this.active, 1);
                 this.active = '';
+                this.setActive('');
             },
             duplicationFileName(fileName){
                 for (const [key,value] of Object.entries(this.files)) {
@@ -96,11 +99,20 @@
                         continue;
                     }
                     if (value.name.includes(fileName)){
-                        alert("같은 파일명이 있습니다.");
+                        this.openVn();
                         return false;
                     }
                 }
                 return true;
+            },
+            openVn() {
+                const h = this.$createElement;
+                this.$message({
+                    message: h('p', null, [
+                        h('span', null, '[알림] '),
+                        h('i', { style: 'color: teal' }, '같은 파일명이 있습니다')
+                    ])
+                });
             }
         }
     }
