@@ -95,8 +95,14 @@
             },
             renderContent(h, { node, data, store }) {
                 return h('SPAN', [
-                    h('SPAN', [h('SPAN', node.label)]),
-                    h('SPAN', {attrs: {style: 'float: right; margin-right: 20px'}}, [
+                    h('SPAN', [h('SPAN', {
+                        props: {type: 'success'},
+                        domProps: {
+                            innerHTML: node.label,
+                            id: "node-id-" + data.id
+                        }
+                    })]),
+                    h('SPAN', {attrs: {style: 'float: right; margin-left: 20px'}}, [
                         h('el-button', { attrs: { size: 'mini', on: { click: this.append(store, data) } } }, 'Append'),
                         h('el-button', { attrs: { size: 'mini', on: { click: this.delete } } }, 'Delete')
                     ])
