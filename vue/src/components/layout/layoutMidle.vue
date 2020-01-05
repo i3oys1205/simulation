@@ -17,8 +17,18 @@
           </el-radio-group>
           <el-button type="success f-r"
                      v-if="actionRadio"
-          v-on:click="setAction">추가
+                     v-on:click.stop="setAction">추가
           </el-button>
+        </el-form-item>
+
+        <el-form-item label="수신 데이터"
+                      v-if="actionRadio === 'click' || actionRadio === 'input'
+                          ||actionRadio==='wait' || actionRadio==='url'">
+          <el-input
+            placeholder=" 수신 데이터를 입력하세요"
+            v-model="actionData">
+          </el-input>
+
         </el-form-item>
         <el-form-item label="XPath"
                       v-if="actionRadio === 'click' || actionRadio === 'input'">
@@ -73,47 +83,57 @@
         },
         data() {
             return {
+                actionData: '',
                 actionRadio: '',
                 actionInput: '',
                 actionXpath: '',
-                action : [
-                ],
+                action: [],
+            }
+        },
+        watch: {
+            active: {
+                deep: true,
+                handler() {
+                    this.action.splice(0);
+                }
             }
         },
         methods: {
-            setAction(){
+            setAction() {
                 this.action.push({
-                    type  : this.actionRadio,
-                    input : this.actionInput,
-                    path  : this.actionXpath,
-                    label : this.actionRadio,
+                    data : this.actionData,
+                    type : this.actionRadio,
+                    input: this.actionInput,
+                    path : this.actionXpath,
+                    label: this.actionRadio,
                 })
+                this.actionData  = '';
+                this.actionRadio = '';
+                this.actionInput = '';
+                this.actionXpath = '';
+                this.actionRadio = '';
             },
             allowDrop(draggingNode, dropNode, type) {
                 return type !== 'inner';
 
             },
-            renderContent(h, { node, data, store }) {
-                return h('SPAN', [
-                    h('SPAN', [h('SPAN', {
-                        props: {type: 'success'},
-                        domProps: {
-                            innerHTML: node.label,
-                            id: "node-id-" + data.id
-                        }
-                    })]),
-                    h('SPAN', {attrs: {style: 'float: right; margin-left: 20px'}}, [
-                        h('el-button', { attrs: { size: 'mini', on: { click: this.append(store, data) } } }, 'Append'),
-                        h('el-button', { attrs: { size: 'mini', on: { click: this.delete } } }, 'Delete')
-                    ])
-                ])
+            renderContent(h, {node, data, store}) {
+                return (
+                    < span >
+                    < span > {node.label} < /span>
+                    < span style = "margin-left:20px;"> {data.data} < /span>
+                    < span style = "margin-left:20px;" >
+                      < el-button size = "mini" type = "text" on-click = {()=>this.remove(node, data)}>Delete < /el-button>
+                    < /span>
+                    < /span>);
             },
-            append(){
 
+            remove(node, data) {
+                const parent = node.parent;
+                const children = parent.data.children || parent.data;
+                const index = children.findIndex(d => d.id === data.id);
+                children.splice(index, 1);
             },
-            delete(){
-
-            }
         }
     }
 </script>
